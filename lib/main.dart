@@ -88,8 +88,6 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Sizer(
@@ -108,14 +106,14 @@ class MyApp extends StatelessWidget {
 // Timeout Wrapper
 class TimeoutWrapper extends StatelessWidget {
   final Widget child;
-  const TimeoutWrapper({super.key, required this.child});
+  const TimeoutWrapper({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
         if (state.isTimedOut) {
-          return child; // No gesture detection when timed out
+          return child;
         }
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
@@ -133,104 +131,115 @@ class TimeoutWrapper extends StatelessWidget {
 }
 
 // Home Screen
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool _checkboxValue = false;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppBloc, AppState>(
-      builder: (context, state) {
-        return Stack(
-          children: [
-            // Main content
-            Scaffold(
-              appBar: AppBar(
-                title: Text('Idle Timeout App'),
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.refresh),
-                    onPressed: state.isTimedOut
-                        ? null
-                        : () {
-                      context.read<AppBloc>().add(ResetTimeout());
-                    },
-                  ),
-                ],
-              ),
-              body: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16.sp),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Device: ${state.deviceType == GadgetType.phone ? "Phone" : "Tablet"}',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      Text(
-                        'ScreenType: ${state.screenType}',
-                        style: TextStyle(fontSize: 16.sp),
-                      ),
-                      SizedBox(height: 16.sp),
-                      TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Enter text',
-                          border: OutlineInputBorder(),
+    return WillPopScope(
+      onWillPop: () async => false, // Block back button
+      child: BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) {
+          return Stack(
+            children: [
+              // Main content
+              Scaffold(
+                appBar: AppBar(
+                  title: Text('Idle Timeout App'),
+                  actions: [
+                    IconButton(
+                      icon: Icon(Icons.refresh),
+                      onPressed: state.isTimedOut
+                          ? null
+                          : () {
+                        context.read<AppBloc>().add(ResetTimeout());
+                      },
+                    ),
+                  ],
+                ),
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.sp),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Device: ${state.deviceType == GadgetType.phone ? "Phone" : "Tablet"}',
+                          style: TextStyle(fontSize: 16.sp),
                         ),
-                        onChanged: state.isTimedOut
-                            ? null
-                            : (value) {
-                          context.read<AppBloc>().add(ResetTimeout());
-                        },
-                      ),
-                      SizedBox(height: 16.sp),
-                      DropdownButtonFormField<String>(
-                        value: 'Option 1',
-                        items: ['Option 1', 'Option 2', 'Option 3']
-                            .map((option) => DropdownMenuItem(
-                          value: option,
-                          child: Text(option),
-                        ))
-                            .toList(),
-                        onChanged: state.isTimedOut
-                            ? null
-                            : (value) {
-                          context.read<AppBloc>().add(ResetTimeout());
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Select option',
-                          border: OutlineInputBorder(),
+                        Text(
+                          'ScreenType: ${state.screenType}',
+                          style: TextStyle(fontSize: 16.sp),
                         ),
-                      ),
-                      SizedBox(height: 16.sp),
-                      CheckboxListTile(
-                        title: Text('Enable feature', style: TextStyle(fontSize: 14.sp)),
-                        value: false,
-                        onChanged: state.isTimedOut
-                            ? null
-                            : (value) {
-                          context.read<AppBloc>().add(ResetTimeout());
-                        },
-                      ),
-                      SizedBox(height: 16.sp),
-                      ElevatedButton(
-                        onPressed: state.isTimedOut
-                            ? null
-                            : () {
-                          context.read<AppBloc>().add(ResetTimeout());
-                        },
-                        child: Text('Press Me', style: TextStyle(fontSize: 14.sp)),
-                      ),
-                    ],
+                        SizedBox(height: 16.sp),
+                        TextField(
+                          decoration: InputDecoration(
+                            labelText: 'Enter text',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: state.isTimedOut
+                              ? null
+                              : (value) {
+                            context.read<AppBloc>().add(ResetTimeout());
+                          },
+                        ),
+                        SizedBox(height: 16.sp),
+                        DropdownButtonFormField<String>(
+                          value: 'Option 1',
+                          items: ['Option 1', 'Option 2', 'Option 3']
+                              .map((option) => DropdownMenuItem(
+                            value: option,
+                            child: Text(option),
+                          ))
+                              .toList(),
+                          onChanged: state.isTimedOut
+                              ? null
+                              : (value) {
+                            context.read<AppBloc>().add(ResetTimeout());
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Select option',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 16.sp),
+                        CheckboxListTile(
+                          title: Text('Enable feature', style: TextStyle(fontSize: 14.sp)),
+                          value: _checkboxValue,
+                          onChanged: state.isTimedOut
+                              ? null
+                              : (value) {
+                            setState(() {
+                              _checkboxValue = value ?? false;
+                            });
+                            context.read<AppBloc>().add(ResetTimeout());
+                          },
+                        ),
+                        SizedBox(height: 16.sp),
+                        ElevatedButton(
+                          onPressed: state.isTimedOut
+                              ? null
+                              : () {
+                            context.read<AppBloc>().add(ResetTimeout());
+                          },
+                          child: Text('Press Me', style: TextStyle(fontSize: 14.sp)),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            // Timeout overlay
-            if (state.isTimedOut) TimeoutScreen(),
-          ],
-        );
-      },
+              // Timeout overlay
+              if (state.isTimedOut) TimeoutScreen(),
+            ],
+          );
+        },
+      ),
     );
   }
 }
