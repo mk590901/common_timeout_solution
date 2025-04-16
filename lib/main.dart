@@ -153,6 +153,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Sizer(
@@ -174,7 +176,7 @@ class MyApp extends StatelessWidget {
 // Timeout Wrapper
 class TimeoutWrapper extends StatelessWidget {
   final Widget child;
-  const TimeoutWrapper({Key? key, required this.child}) : super(key: key);
+  const TimeoutWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +202,8 @@ class TimeoutWrapper extends StatelessWidget {
 
 // Home Screen
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -315,6 +319,8 @@ class HomeScreen extends StatelessWidget {
 
 // Timeout Screen
 class TimeoutScreen extends StatelessWidget {
+  const TimeoutScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
