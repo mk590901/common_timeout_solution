@@ -246,6 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Timeout Screen
 class TimeoutScreen extends StatelessWidget {
+  static const String sessionTimedOut = 'Session Timed Out';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -255,7 +257,7 @@ class TimeoutScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Session Timed Out',
+              sessionTimedOut,
               style: TextStyle(fontSize: 20.sp, color: Colors.white),
             ),
             SizedBox(height: 16.sp),
