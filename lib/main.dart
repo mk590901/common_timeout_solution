@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => false, // Block back button
+      onWillPop: () async => !context.read<AppBloc>().state.isTimedOut,
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {
           return Stack(
@@ -246,8 +246,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Timeout Screen
 class TimeoutScreen extends StatelessWidget {
-  const TimeoutScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(
