@@ -206,8 +206,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => !context.read<AppBloc>().state.isTimedOut,
+    return PopScope(
+        canPop: !context.read<AppBloc>().state.isTimedOut,
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, appState) {
           return Stack(
