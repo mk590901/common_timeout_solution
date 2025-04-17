@@ -215,14 +215,28 @@ class HomeScreen extends StatelessWidget {
               // Main content
               Scaffold(
                 appBar: AppBar(
-                  title: Text(AppStrings.appTitle),
+                  title: Text(
+                    'Drawing Timeout Demo',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontStyle: FontStyle.normal,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 8.0,
+                          color: Colors.indigo,
+                          offset: Offset(3.0, 3.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  backgroundColor: Colors.blue,
                   actions: [
                     IconButton(
-                      icon: Icon(Icons.refresh),
-                      onPressed: appState.isTimedOut
-                          ? null
-                          : () {
+                      icon: Icon(Icons.refresh, color: Colors.white),
+                      onPressed: () {
                         context.read<AppBloc>().add(ResetTimeout());
+                        showToast(context, 'Action "Refresh" should be done.');
                       },
                     ),
                   ],
@@ -239,10 +253,6 @@ class HomeScreen extends StatelessWidget {
                               'Device: ${appState.deviceType == GadgetType.phone ? "Phone" : "Tablet"}',
                               style: TextStyle(fontSize: 16.sp),
                             ),
-                            Text(
-                              'ScreenType: ${appState.screenType}',
-                              style: TextStyle(fontSize: 16.sp),
-                            ),
                             SizedBox(height: 16.sp),
                             TextField(
                               controller: TextEditingController(text: formState.textInput)
@@ -253,9 +263,7 @@ class HomeScreen extends StatelessWidget {
                                 labelText: AppStrings.enterText,
                                 border: OutlineInputBorder(),
                               ),
-                              onChanged: appState.isTimedOut
-                                  ? null
-                                  : (value) {
+                              onChanged: (value) {
                                 context.read<FormBloc>().add(UpdateTextInput(value));
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
@@ -269,9 +277,7 @@ class HomeScreen extends StatelessWidget {
                                 child: Text(option),
                               ))
                                   .toList(),
-                              onChanged: appState.isTimedOut
-                                  ? null
-                                  : (value) {
+                              onChanged: (value) {
                                 context.read<FormBloc>().add(UpdateDropdownValue(value!));
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
@@ -284,19 +290,16 @@ class HomeScreen extends StatelessWidget {
                             CheckboxListTile(
                               title: Text(AppStrings.enableFeature, style: TextStyle(fontSize: 14.sp)),
                               value: formState.checkboxValue,
-                              onChanged: appState.isTimedOut
-                                  ? null
-                                  : (value) {
+                              onChanged: (value) {
                                 context.read<FormBloc>().add(UpdateCheckboxValue(value ?? false));
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
                             ),
                             SizedBox(height: 16.sp),
                             ElevatedButton(
-                              onPressed: appState.isTimedOut
-                                  ? null
-                                  : () {
+                              onPressed: () {
                                 context.read<AppBloc>().add(ResetTimeout());
+                                showToast(context, '"${AppStrings.pressMe}" button click should be proceeded.');
                               },
                               child: Text(AppStrings.pressMe, style: TextStyle(fontSize: 14.sp)),
                             ),
@@ -346,3 +349,17 @@ class TimeoutScreen extends StatelessWidget {
     );
   }
 }
+
+void showToast(BuildContext context, String text) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(
+    SnackBar(
+      backgroundColor: Colors.indigoAccent,
+      content: Text(text, style: const TextStyle(
+        fontSize: 16, fontStyle: FontStyle.italic, color: Colors.white70,)),
+      action: SnackBarAction(
+          label: 'CLOSE', onPressed: scaffold.hideCurrentSnackBar),
+    ),
+  );
+}
+
