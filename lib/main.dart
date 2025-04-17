@@ -94,7 +94,7 @@ class AppState {
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   Timer? _timeoutTimer;
-  final Duration timeoutDuration = Duration(seconds: 5);
+  final Duration timeoutDuration = Duration(seconds: 10);
 
   AppBloc() : super(AppState(GadgetType.phone, 'Unknown')) {
     on<InitializeApp>(_onInitializeApp);
@@ -332,16 +332,21 @@ class TimeoutScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              AppStrings.sessionTimedOut,
-              style: TextStyle(fontSize: 20.sp, color: Colors.white),
+
+            Icon(Icons.lock,
+              size: 48.sp,
+              color: Colors.blueAccent,
             ),
+
             SizedBox(height: 16.sp),
             ElevatedButton(
               onPressed: () {
                 context.read<AppBloc>().add(ResetTimeout());
               },
-              child: Text(AppStrings.unlockApp, style: TextStyle(fontSize: 16.sp)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent, foregroundColor: Colors.white,
+              ),
+              child: Text(AppStrings.unlockApp, style: TextStyle(fontSize: 18.sp)),
             ),
           ],
         ),
