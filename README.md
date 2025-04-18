@@ -1,6 +1,6 @@
-# common_timeout_solution
+# Timeout blocking app
 
-A new Flutter project.
+The repository contains form's app implements itself blocking by timeout. The application is a generalization of a particular solution described earlier in https://github.com/mk590901/idle_timeout. 
 
 ## Getting Started
 
