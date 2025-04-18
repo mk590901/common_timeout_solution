@@ -285,7 +285,7 @@ class HomeScreen extends StatelessWidget {
                                       .map(
                                         (option) => DropdownMenuItem(
                                           value: option,
-                                          child: Text(option),
+                                          child: Text(option, style: TextStyle(fontSize: 14.sp),),
                                         ),
                                       )
                                       .toList(),
