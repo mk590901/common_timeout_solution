@@ -115,9 +115,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     final deviceType = isTablet ? GadgetType.tablet : GadgetType.phone;
 
     if (isTablet) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.landscapeRight,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
     } else {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -161,12 +159,12 @@ class MyApp extends StatelessWidget {
       builder: (context, orientation, deviceType) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => AppBloc()..add(InitializeApp(context))),
+            BlocProvider(
+              create: (context) => AppBloc()..add(InitializeApp(context)),
+            ),
             BlocProvider(create: (context) => FormBloc()),
           ],
-          child: MaterialApp(
-            home: TimeoutWrapper(child: HomeScreen()),
-          ),
+          child: MaterialApp(home: TimeoutWrapper(child: HomeScreen())),
         );
       },
     );
@@ -207,7 +205,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        canPop: !context.read<AppBloc>().state.isTimedOut,
+      canPop: !context.read<AppBloc>().state.isTimedOut,
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, appState) {
           return Stack(
@@ -216,7 +214,7 @@ class HomeScreen extends StatelessWidget {
               Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    'Drawing Timeout Demo',
+                    'Form Timeout Demo',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -243,6 +241,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 body: BlocBuilder<FormBloc, FormState>(
                   builder: (context, formState) {
+                    final orientation = MediaQuery.of(context).orientation;
                     return SingleChildScrollView(
                       child: Padding(
                         padding: EdgeInsets.all(16.sp),
@@ -251,34 +250,49 @@ class HomeScreen extends StatelessWidget {
                           children: [
                             Text(
                               'Device: ${appState.deviceType == GadgetType.phone ? "Phone" : "Tablet"}',
-                              style: TextStyle(fontSize: 16.sp),
+                              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(height: 16.sp),
+                            Text(
+                              'Orientation: $orientation',
+                              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                            ),
+                            SizedBox(height: 24.sp),
                             TextField(
-                              controller: TextEditingController(text: formState.textInput)
+                              controller: TextEditingController(
+                                  text: formState.textInput,
+                                )
                                 ..selection = TextSelection.fromPosition(
-                                  TextPosition(offset: formState.textInput.length),
+                                  TextPosition(
+                                    offset: formState.textInput.length,
+                                  ),
                                 ),
                               decoration: InputDecoration(
                                 labelText: AppStrings.enterText,
                                 border: OutlineInputBorder(),
                               ),
                               onChanged: (value) {
-                                context.read<FormBloc>().add(UpdateTextInput(value));
+                                context.read<FormBloc>().add(
+                                  UpdateTextInput(value),
+                                );
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
                             ),
                             SizedBox(height: 16.sp),
                             DropdownButtonFormField<String>(
                               value: formState.dropdownValue,
-                              items: ['Option 1', 'Option 2', 'Option 3']
-                                  .map((option) => DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              ))
-                                  .toList(),
+                              items:
+                                  ['Option 1', 'Option 2', 'Option 3']
+                                      .map(
+                                        (option) => DropdownMenuItem(
+                                          value: option,
+                                          child: Text(option),
+                                        ),
+                                      )
+                                      .toList(),
                               onChanged: (value) {
-                                context.read<FormBloc>().add(UpdateDropdownValue(value!));
+                                context.read<FormBloc>().add(
+                                  UpdateDropdownValue(value!),
+                                );
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
                               decoration: InputDecoration(
@@ -286,22 +300,37 @@ class HomeScreen extends StatelessWidget {
                                 border: OutlineInputBorder(),
                               ),
                             ),
-                            SizedBox(height: 16.sp),
+                            SizedBox(height: 24.sp),
                             CheckboxListTile(
-                              title: Text(AppStrings.enableFeature, style: TextStyle(fontSize: 14.sp)),
+                              title: Text(
+                                AppStrings.enableFeature,
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
                               value: formState.checkboxValue,
                               onChanged: (value) {
-                                context.read<FormBloc>().add(UpdateCheckboxValue(value ?? false));
+                                context.read<FormBloc>().add(
+                                  UpdateCheckboxValue(value ?? false),
+                                );
                                 context.read<AppBloc>().add(ResetTimeout());
                               },
                             ),
-                            SizedBox(height: 16.sp),
+                            SizedBox(height: 32.sp),
                             ElevatedButton(
                               onPressed: () {
                                 context.read<AppBloc>().add(ResetTimeout());
-                                showToast(context, '"${AppStrings.pressMe}" button click should be proceeded.');
+                                showToast(
+                                  context,
+                                  '"${AppStrings.pressMe}" button click should be proceeded.',
+                                );
                               },
-                              child: Text(AppStrings.pressMe, style: TextStyle(fontSize: 14.sp)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.amberAccent,
+                                foregroundColor: Colors.black,
+                              ),
+                              child: Text(
+                                AppStrings.pressMe,
+                                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                              ),
                             ),
                           ],
                         ),
@@ -332,21 +361,20 @@ class TimeoutScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Icon(Icons.lock,
-              size: 48.sp,
-              color: Colors.blueAccent,
-            ),
-
+            Icon(Icons.lock, size: 48.sp, color: Colors.blueAccent),
             SizedBox(height: 16.sp),
             ElevatedButton(
               onPressed: () {
                 context.read<AppBloc>().add(ResetTimeout());
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent, foregroundColor: Colors.white,
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: Colors.white,
               ),
-              child: Text(AppStrings.unlockApp, style: TextStyle(fontSize: 18.sp)),
+              child: Text(
+                AppStrings.unlockApp,
+                style: TextStyle(fontSize: 18.sp),
+              ),
             ),
           ],
         ),
@@ -360,11 +388,18 @@ void showToast(BuildContext context, String text) {
   scaffold.showSnackBar(
     SnackBar(
       backgroundColor: Colors.indigoAccent,
-      content: Text(text, style: const TextStyle(
-        fontSize: 16, fontStyle: FontStyle.italic, color: Colors.white70,)),
+      content: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 16,
+          fontStyle: FontStyle.italic,
+          color: Colors.white70,
+        ),
+      ),
       action: SnackBarAction(
-          label: 'CLOSE', onPressed: scaffold.hideCurrentSnackBar),
+        label: 'CLOSE',
+        onPressed: scaffold.hideCurrentSnackBar,
+      ),
     ),
   );
 }
-
