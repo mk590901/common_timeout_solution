@@ -1,19 +1,24 @@
 # Timeout blocking app
 
-The repository contains form's app implements itself blocking by timeout. The application is a generalization of a particular solution described earlier in https://github.com/mk590901/idle_timeout. 
+This app is a generalization of the app in the repository https://github.com/mk590901/idle_timeout. Unlike the earlier implementation, it takes a more generic approach, offering __auto-blocking__ for an arbitrary Flutter app.
 
-## Getting Started
+## Business logic of the application
 
-This project is a starting point for a Flutter application.
+* The application represents a page with a form thas several GUI elements contains data that need to be selected or modified: text, some option and parameters from the proposed list, as well as several buttons for performing operations. These are the most typical widgets of __Flutter__.
 
-A few resources to get you started if this is your first Flutter project:
+* If the user doesn't use the application for a specified period of time, i.e. doesn't touch the screen, the application is automatically locked: a translucent screen appears, blocking access to widgets, as well as exiting the application by pressing the back button.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+* You can unlock the application by pressing the __App Unlock__ button on the translucent screen.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* Another useful feature is implemented in the application: on the phone, the application runs in __portrait mode__, on the tablet - in __landscape mode__.
+
+## Key elements of the application:
+
+* Form state (FormBloc).
+* Transparent TimeoutScreen.
+* Timeout for widgets.
+* Unlock button.
+* Orientation.
 
 
 ## Movie I  Phone
