@@ -46,11 +46,11 @@ __TimeoutWrapper__, _is the most important, key element of the app_, uses __Gest
 * Other interactions via NotificationListener (e.g., text input, selections).
 * Wraps the entire HomeScreen, covering AppBar, body, and all widgets.
 
-## Movie I  Phone
+## Movie I  App on Phone
 
 https://github.com/user-attachments/assets/72c1076e-ccf3-479c-b82d-a160cf50b2a2
 
-## Movie II Tablet
+## Movie II App on Tablet
 
 https://github.com/user-attachments/assets/cd4a5d0e-55fa-49d6-a88c-203fced692e6
 
